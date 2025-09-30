@@ -1,5 +1,14 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
+// Small debounce for "instant" feel without spamming the API
+export function debounce<T extends (...args: any[]) => void>(fn: T, delay = 250) {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
 export async function fetchQuote({
   mode,
   to,

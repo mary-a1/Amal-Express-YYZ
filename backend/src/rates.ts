@@ -1,5 +1,5 @@
-import fetch from 'node-fetch';
-import dotenv from 'dotenv';
+import fetch from "node-fetch";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -14,8 +14,12 @@ interface ExchangeRateResponse {
   };
 }
 
-// Get the CAD to `to` conversion rate
-export async function getRate(to: string): Promise<{ base: string; xeRate: number; adjustedRate: number }> {
+// Get the CAD to `to` conversion rate with adjustment applied
+export async function getRate(to: string): Promise<{
+  base: string;
+  xeRate: number;
+  adjustedRate: number;
+}> {
   const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/CAD`;
 
   const res = await fetch(url);
@@ -24,13 +28,13 @@ export async function getRate(to: string): Promise<{ base: string; xeRate: numbe
   const data = (await res.json()) as ExchangeRateResponse;
 
   const rate = data.conversion_rates[to];
-  if (!rate) throw new Error(`Currency ${to} not found in API response`);
+  if (!rate) throw new Error(`Currency ${to} not found in conversion_rates`);
 
   const adjustedRate = rate + Number(process.env.RATE_ADJUSTMENT ?? 0);
 
   return {
     base: data.base_code,
     xeRate: rate,
-    adjustedRate
+    adjustedRate,
   };
 }

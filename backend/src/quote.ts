@@ -1,58 +1,100 @@
 // quote.ts
-import { getCommissionPct } from "./commission";
-
+// import { getCommissionPct } from "./commission";
 
 /**
  * Customer wants to send X (USD/KES/etc) → return total CAD to pay
  */
-export function forwardQuote(sendAmount: number, rate: number) {
-  const commissionPct = getCommissionPct(sendAmount);
-  const commission = sendAmount * commissionPct;
-  const totalAmount = sendAmount + commission;
-  const cadAmount = totalAmount * rate;
+// export function forwardQuote(sendAmount: number, rate: number) {
+//   const commissionPct = getCommissionPct(sendAmount); // CAD
+//   const commission = sendAmount * commissionPct; // CAD
+//   const total = sendAmount + commission; // CAD
 
-  return {
-    direction: "SEND",
-    commissionPct,
-    commission,
-    sendAmount,
-    totalAmount,
-    cadAmount
-  };
-}
+//   const foreignAmount = total / rate; // ✅ Convert CAD → USD, KES, etc
+
+//   return {
+//     direction: "SEND",
+//     commissionPct,
+//     commission,
+//     totalAmount: total,
+//     sendAmount,
+//     convertedAmount: foreignAmount,
+//   };
+// }
 
 /**
  * Customer has X CAD to pay → return how much recipient can receive
  */
-export function reverseQuote(cadAmount: number, rate: number) {
-  // Initial estimate — assume no commission
-  let estimatedSendAmount = cadAmount / rate;
-  let lastSendAmount = 0;
 
-  // Fixed point iteration to converge on correct tier + amount
-  for (let i = 0; i < 10; i++) {
-    const commissionPct = getCommissionPct(estimatedSendAmount);
-    const totalUsd = estimatedSendAmount * (1 + commissionPct);
-    const estimatedCad = totalUsd * rate;
+// export function reverseQuote(cadAmount: number, rate: number) {
+//   // Invert the rate: from CAD→USD → USD→CAD
+//   const invertedRate = 1 / rate;
 
-    if (Math.abs(estimatedCad - cadAmount) < 0.01) {
-      break;
-    }
+//   let estimatedSendAmount = cadAmount * invertedRate;
 
-    lastSendAmount = estimatedSendAmount;
-    estimatedSendAmount = cadAmount / (rate * (1 + commissionPct));
-  }
+//   for (let i = 0; i < 10; i++) {
+//     const commissionPct = getCommissionPct(estimatedSendAmount);
+//     estimatedSendAmount = (cadAmount * invertedRate) / (1 + commissionPct);
+//   }
 
-  const commissionPct = getCommissionPct(estimatedSendAmount);
-  const commission = estimatedSendAmount * commissionPct;
-  const totalAmount = estimatedSendAmount + commission;
+//   const commissionPct = getCommissionPct(estimatedSendAmount);
+//   const commission = estimatedSendAmount * commissionPct;
+//   const totalAmount = estimatedSendAmount + commission;
+
+//   return {
+//     direction: "PAY",
+//     commissionPct,
+//     commission,
+//     sendAmount: estimatedSendAmount,
+//     totalAmount,
+//     cadAmount,
+//   };
+// }
+
+// src/quote.ts
+
+import { getCommissionPct } from './commission';
+
+/**
+ * Mode: "SEND"
+ * User enters CAD → calculate how much recipient gets in foreign currency
+ */
+export function forwardQuote(cadAmount: number, rate: number) {
+  const commissionPct = getCommissionPct(cadAmount);
+  const commission = cadAmount * commissionPct;
+  const amountToConvert = cadAmount - commission;
+  const recipientAmount = amountToConvert * rate;
 
   return {
-    direction: "PAY",
+    mode: "SEND",
     commissionPct,
     commission,
-    sendAmount: estimatedSendAmount,
-    totalAmount,
-    cadAmount
+    recipientAmount,
+    totalToSend: cadAmount
+  };
+}
+
+/**
+ * Mode: "RECEIVE"
+ * User enters amount recipient should get → calculate how much CAD to pay
+ */
+export function reverseQuote(recipientAmount: number, rate: number) {
+  let amountToConvert = recipientAmount / rate;
+
+  // Estimate CAD → adjust for commission tier
+  for (let i = 0; i < 10; i++) {
+    const commissionPct = getCommissionPct(amountToConvert);
+    amountToConvert = recipientAmount / (rate * (1 - commissionPct));
+  }
+
+  const commissionPct = getCommissionPct(amountToConvert);
+  const commission = amountToConvert * commissionPct;
+  const totalToPay = amountToConvert + commission;
+
+  return {
+    mode: "RECEIVE",
+    commissionPct,
+    commission,
+    totalToPay,
+    recipientAmount
   };
 }

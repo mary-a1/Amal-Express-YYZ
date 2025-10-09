@@ -1,40 +1,21 @@
-import fetch from "node-fetch";
-import dotenv from "dotenv";
+import axios from 'axios';
 
-dotenv.config();
+export async function getExchangeRate(toCurrency: string): Promise<number> {
+  if (toCurrency !== 'USD') {
+    throw new Error("Only USD is supported");
+  }
 
-const apiKey = process.env.EXCHANGE_RATE_API_KEY;
-if (!apiKey) throw new Error("Missing EXCHANGE_RATE_API_KEY in .env");
-
-// Define the API response shape
-interface ExchangeRateResponse {
-  base_code: string;
-  conversion_rates: {
-    [currency: string]: number;
-  };
-}
-
-// Get the CAD to `to` conversion rate with adjustment applied
-export async function getRate(to: string): Promise<{
-  base: string;
-  xeRate: number;
-  adjustedRate: number;
-}> {
+  const apiKey = process.env.EXCHANGE_RATE_API_KEY;
   const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/CAD`;
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`ExchangeRate API error ${res.status}`);
+  try {
+    const res = await axios.get(url);
+    const rate = res.data?.conversion_rates?.[toCurrency];
 
-  const data = (await res.json()) as ExchangeRateResponse;
-
-  const rate = data.conversion_rates[to];
-  if (!rate) throw new Error(`Currency ${to} not found in conversion_rates`);
-
-  const adjustedRate = rate + Number(process.env.RATE_ADJUSTMENT ?? 0);
-
-  return {
-    base: data.base_code,
-    xeRate: rate,
-    adjustedRate,
-  };
+    if (!rate) throw new Error("USD rate not found");
+    return rate;
+  } catch (err) {
+    console.error("Exchange rate fetch failed:", err);
+    throw err;
+  }
 }

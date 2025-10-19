@@ -13,9 +13,9 @@ export default function HeroSection({ setFinalPayAmount }: HeroSectionProps) {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
         {/* Left Text Content */}
         <div className="space-y-6 order-2 lg:order-1">
-          <div className="inline-block">
-            <span className="font-bold text-xl">Welcome to Amal Express   </span>
-            <span className="bg-yellow-400 text-black font-bold text-sm px-4 py-1.5 rounded-full tracking-wider"> YYZ
+            <p className="font-bold text-xl">Welcome to Amal Express Canada  </p>
+          <div className="">
+            <span className="bg-yellow-400 text-black font-bold text-sm px-1 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD 
             </span>
           </div>
 

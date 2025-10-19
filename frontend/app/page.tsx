@@ -37,6 +37,7 @@ import Navbar from '@/components/NavBar';
 import HeroSection from '@/components/HeroSection';
 import CurrencyCalculator from '@/components/CurrencyCalculator';
 import TransferSteps from '@/components/TransferSteps';
+import StoreLocator from '@/components/StoreLocator';
 
 export default function Home() {
   const [finalPayAmount, setFinalPayAmount] = useState<number | null>(null);
@@ -54,6 +55,11 @@ export default function Home() {
       {/* Transfer Steps */}
       <div className="flex justify-center px-4 py-12">
         <TransferSteps finalPayAmount={finalPayAmount} />
+      </div>
+      
+      {/* Leaflet Maps */}
+       <div className="flex justify-center px-4 py-12">
+        < StoreLocator/>
       </div>
     </main>
   );

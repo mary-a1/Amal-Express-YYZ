@@ -34,7 +34,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
           <a href="#" className="hover:text-yellow-400 transition text-base font-medium">Home</a>
           <a href="#" className="hover:text-yellow-400 transition text-base font-medium">About</a>
-          <a href="#" className="hover:text-yellow-400 transition text-base font-medium">Contact</a>
+          <a href="#" className="hover:text-yellow-400 transition text-base font-medium">Locations</a>
           <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2.5 px-6 lg:px-8 rounded-full transition text-base">
             Find Locations
           </button>

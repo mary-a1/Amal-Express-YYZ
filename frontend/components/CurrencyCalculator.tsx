@@ -96,8 +96,8 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
             }}
           />
           <div className="flex items-center gap-2 ml-4">
-            <span className="text-2xl">🇨🇦</span>
-            <span className="font-semibold text-sm sm:text-base">CAD</span>
+            <span className="text-4xl">🇨🇦</span>
+            <span className="font-semibold  text-black text-sm sm:text-base">CAD</span>
           </div>
         </div>
       </div>
@@ -147,8 +147,8 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
             }}
           />
           <div className="flex items-center gap-2 ml-4">
-            <span className="text-xl">🇺🇸</span>
-            <span className="font-semibold text-sm sm:text-base">USD</span>
+            <span className="text-4xl">🇺🇸</span>
+            <span className="font-semibold text-black text-sm sm:text-base">USD</span>
           </div>
         </div>
       </div>

@@ -9,13 +9,13 @@ interface HeroSectionProps {
 
 export default function HeroSection({ setFinalPayAmount }: HeroSectionProps) {
   return (
-    <section className="bg-[#0D0C1D] text-white py-3 px-4 sm:py-3 lg:py-5  sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+    <section className=" text-white py-3 px-4 sm:py-3 lg:py-5  sm:px-6 lg:px-8">
+      <div className=" max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
         {/* Left Text Content */}
         <div className="space-y-6 order-2 lg:order-1">
-            <p className="font-bold text-xl">Welcome to Amal Express Canada  </p>
+            <p className="font-bold text-2xl ">Welcome to Amal Express Canada  </p>
           <div className="">
-            <span className="bg-yellow-400 text-black font-bold text-sm px-1 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD 
+            <span className="bg-yellow-400 text-black font-bold text-lg px-3 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD 
             </span>
           </div>
 
@@ -23,7 +23,7 @@ export default function HeroSection({ setFinalPayAmount }: HeroSectionProps) {
             Send Money Smarter, Faster,{" "}
             <span className="text-yellow-400">Everywhere.</span>
           </h1>
-          <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
+          <p className="text-base sm:text-xl text-white leading-relaxed">
             A simpler way to move money — transparent rates, no hidden fees, and
             transfers that just work.
           </p>

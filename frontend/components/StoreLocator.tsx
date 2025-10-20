@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { MapPin, Search, Phone, Navigation, X } from 'lucide-react';
 
@@ -209,7 +209,7 @@ export default function StoreLocator() {
       `;
 
       marker.bindPopup(popupContent);
-      
+
       marker.on('click', () => {
         setSelectedAgent(agent);
       });
@@ -233,13 +233,13 @@ export default function StoreLocator() {
 
   // Filter agents based on search and province
   const filteredAgents = agents.filter(agent => {
-    const matchesSearch = 
+    const matchesSearch =
       agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       agent.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
       agent.address.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesProvince = selectedProvince === 'all' || agent.province === selectedProvince;
-    
+
     return matchesSearch && matchesProvince;
   });
 
@@ -253,7 +253,7 @@ export default function StoreLocator() {
             lng: position.coords.longitude
           };
           setUserLocation(userPos);
-          
+
           if (map && leaflet) {
             // Add user location marker
             const userIcon = leaflet.divIcon({
@@ -262,12 +262,12 @@ export default function StoreLocator() {
               iconSize: [20, 20],
               iconAnchor: [10, 10]
             });
-            
+
             leaflet.marker([userPos.lat, userPos.lng], { icon: userIcon })
               .addTo(map)
               .bindPopup('You are here')
               .openPopup();
-            
+
             map.setView([userPos.lat, userPos.lng], 12);
           }
         },
@@ -283,72 +283,213 @@ export default function StoreLocator() {
     const R = 6371; // Earth's radius in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
 
   // Sort by distance if user location is available
-  const sortedAgents = userLocation 
+  const sortedAgents = userLocation
     ? [...filteredAgents].sort((a, b) => {
-        const distA = calculateDistance(userLocation.lat, userLocation.lng, a.lat, a.lng);
-        const distB = calculateDistance(userLocation.lat, userLocation.lng, b.lat, b.lng);
-        return distA - distB;
-      })
+      const distA = calculateDistance(userLocation.lat, userLocation.lng, a.lat, a.lng);
+      const distB = calculateDistance(userLocation.lat, userLocation.lng, b.lat, b.lng);
+      return distA - distB;
+    })
     : filteredAgents;
 
   const getDirections = (agent) => {
     const address = encodeURIComponent(`${agent.address}, ${agent.city}, ${agent.province} ${agent.postalCode}`);
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
   };
+  // <div className="space-y-6 order-2 lg:order-1">
+  //   <p className="font-bold text-2xl ">Welcome to Amal Express Canada  </p>
+  //   <div className="">
+  //     <span className="bg-yellow-400 text-black font-bold text-lg px-1 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD
+  //     </span>
+  //   </div>
 
+  // return (
+  //   <div className="min-h-screen bg-transparent">
+  //     {/* Header */}
+  //     <div className="bg-transparent">
+  //       <div className=" px-4 sm:px-6 lg:px-8 py-2">
+  //         <div className="flex items-center gap-3">
+  //           <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-6">Find a Location Near You</h1>
+  //         </div>
+  //         <div>
+  //            <span className="bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider"> In Canada 🇨🇦 
+  //           </span>
+  //         </div>
+  //         <div>
+  //             <p className="text-white mt-1">Search by city or postal code</p>
+  //           </div>
+  //       </div>
+  //     </div>
+
+  //     {/* Main Content */}
+  //     <div className="px-4 sm:px-6 lg:px-8 py-8">
+  //       <div className="flex lg:flex-row gap-6">
+  //         {/* Sidebar - Search & Results */}
+  //         <div className="w-full lg:w-1/3 space-y-4">
+  //           {/* Search Box */}
+  //           <div className="space-y-4">
+  //             <div className="relative">
+  //               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+  //               <input
+  //                 type="text"
+  //                 placeholder="Search by city or postal code"
+  //                 value={searchTerm}
+  //                 onChange={(e) => setSearchTerm(e.target.value)}
+  //                 className="w-full pl-14 pr-6 py-4 bg-transparent border-3 border-orange-300 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg"
+  //               />
+  //             </div>
+
+  //             {/* Province Filter */}
+  //             <div className="mt-4">
+  //               <label className="block text-sm font-medium text-white-700 mb-2">
+  //                 Filter by Province
+  //               </label>
+  //               <select
+  //                 value={selectedProvince}
+  //                 onChange={(e) => setSelectedProvince(e.target.value)}
+  //                 className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+  //               >
+  //                 <option value="all">All Provinces</option>
+  //                 <option value="ON">Ontario</option>
+  //                 <option value="AB">Alberta</option>
+  //               </select>
+  //             </div>
+
+  //             {/* Use My Location Button */}
+  //             <button
+  //               onClick={getUserLocation}
+  //               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-colors"
+  //             >
+  //               <Navigation className="h-5 w-5" />
+  //               Use My Location
+  //             </button>
+
+  //             <p className="text-lg text-gray-400 mt-2">
+  //               {sortedAgents.length} agent{sortedAgents.length !== 1 ? 's' : ''} found
+  //             </p>
+  //           </div>
+
+  //           {/* Agent List */}
+  //           <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+  //             {sortedAgents.map((agent) => {
+  //               const distance = userLocation
+  //                 ? calculateDistance(userLocation.lat, userLocation.lng, agent.lat, agent.lng)
+  //                 : null;
+
+  //               return (
+  //                 <div
+  //                   key={agent.agentId}
+  //                   onClick={() => setSelectedAgent(agent)}
+  //                   className={` bg-[#0D0C1D] border-2 border-orange-300  rounded-lg shadow-md p-4 cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.agentId === agent.agentId ? 'ring-2 ring-blue-500' : ''
+  //                     }`}
+  //                 >
+  //                   <div className="flex items-start justify-between mb-3">
+  //                     <div className="flex-1 ">
+  //                       <h3 className="font-semibold text-white-900 text-xl">{agent.name}</h3>
+  //                       <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
+  //                       <p className="text-lg text-gray-400">
+  //                         {agent.city}, {agent.province} {agent.postalCode}
+  //                       </p>
+  //                       <div className="flex items-center gap-2 mt-2 ">
+  //                         <Phone className="h-4 w-4 text-yellow-400" />
+  //                         <a
+  //                           href={`tel:${agent.phone}`}
+  //                           className="text-sm text-yellow-400 hover:underline"
+  //                           onClick={(e) => e.stopPropagation()}
+  //                         >
+  //                           {agent.phone}
+  //                         </a>
+  //                       </div>
+  //                       {distance && (
+  //                         <p className="text-sm text-green-600 font-medium mt-2">
+  //                           {distance.toFixed(1)} km away
+  //                         </p>
+  //                       )}
+  //                     </div>
+  //                     <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0" />
+  //                   </div>
+  //                   <button
+  //                     onClick={(e) => {
+  //                       e.stopPropagation();
+  //                       getDirections(agent);
+  //                     }}
+  //                     className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+  //                   >
+  //                     Get Directions
+  //                   </button>
+  //                 </div>
+  //               );
+  //             })}
+  //           </div>
+  //         </div>
+
+  //         {/* Map */}
+  //         <div className="w-full lg:w-2/3">
+  //           <div className="bg-transparent rounded-2xl overflow-hidden h-[700px]">
+  //             <div
+  //               ref={mapContainerRef}
+  //               className="w-full h-full rounded-2xl overflow-hidden"
+  //               style={{ minHeight: '700px' }}
+  //             />
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="w-full min-h-screen bg-transparent">
       {/* Header */}
-      <div className="bg-transparent shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-3">
-            {/* <span className=" bg-yellow-400 rounded-lg text-white font-bold text-xl">
-              Amal Express
-            </span> */}
-            <div>
-              <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-6">Find a Location Near You</h1>
-              <p className="text-white mt-1">Search by city or postal code</p>
-            </div>
-          </div>
+      <div className="bg-transparent px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center">
+            Find a Location Near You <br/>
+          <span className=" w-fit text-center bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider">
+              In Canada 🇨🇦
+            </span>
+          </h1>
+
         </div>
+          <div>
+            
+          </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Search & Results */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="w-full lg:w-1/3 space-y-4">
             {/* Search Box */}
-            <div className="mb-8">
-             <div className="relative">
-            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by city or postal code"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 bg-transparent border-2 border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg"
-            />
-          </div>
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by city or postal code"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-14 pr-6 py-4 bg-transparent border-2 border-orange-300 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg"
+                />
+              </div>
 
               {/* Province Filter */}
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-white-700 mb-2">
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">
                   Filter by Province
                 </label>
                 <select
                   value={selectedProvince}
                   onChange={(e) => setSelectedProvince(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-[#0D0C1D] text-white border border-orange-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">All Provinces</option>
                   <option value="ON">Ontario</option>
@@ -359,21 +500,21 @@ export default function StoreLocator() {
               {/* Use My Location Button */}
               <button
                 onClick={getUserLocation}
-                className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors"
               >
-                <Navigation className="h-4 w-4" />
+                <Navigation className="h-5 w-5" />
                 Use My Location
               </button>
 
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-lg text-gray-400">
                 {sortedAgents.length} agent{sortedAgents.length !== 1 ? 's' : ''} found
               </p>
             </div>
 
             {/* Agent List */}
-            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
               {sortedAgents.map((agent) => {
-                const distance = userLocation 
+                const distance = userLocation
                   ? calculateDistance(userLocation.lat, userLocation.lng, agent.lat, agent.lng)
                   : null;
 
@@ -381,20 +522,19 @@ export default function StoreLocator() {
                   <div
                     key={agent.agentId}
                     onClick={() => setSelectedAgent(agent)}
-                    className={`bg-transparent border-2 border-solid  rounded-lg shadow-md p-4 cursor-pointer transition-all hover:shadow-lg ${
-                      selectedAgent?.agentId === agent.agentId ? 'ring-2 ring-blue-500' : ''
-                    }`}
+                    className={`bg-[#0D0C1D] border-2 border-orange-300 rounded-lg shadow-md p-4 cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.agentId === agent.agentId ? 'ring-2 ring-blue-500' : ''
+                      }`}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 bor">
-                        <h3 className="font-semibold text-white-900">{agent.name}</h3>
-                        <p className="text-sm text-white mt-1">{agent.address}</p>
-                        <p className="text-sm text-white">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-white text-xl">{agent.name}</h3>
+                        <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
+                        <p className="text-lg text-gray-400">
                           {agent.city}, {agent.province} {agent.postalCode}
                         </p>
-                        <div className="flex items-center gap-2 mt-2 ">
+                        <div className="flex items-center gap-2 mt-2">
                           <Phone className="h-4 w-4 text-yellow-400" />
-                          <a 
+                          <a
                             href={`tel:${agent.phone}`}
                             className="text-sm text-yellow-400 hover:underline"
                             onClick={(e) => e.stopPropagation()}
@@ -403,19 +543,19 @@ export default function StoreLocator() {
                           </a>
                         </div>
                         {distance && (
-                          <p className="text-sm text-green-600 font-medium mt-2">
+                          <p className="text-sm text-green-400 font-medium mt-2">
                             {distance.toFixed(1)} km away
                           </p>
                         )}
                       </div>
-                      <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                      <MapPin className="h-5 w-5 text-blue-500 flex-shrink-0" />
                     </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         getDirections(agent);
                       }}
-                      className="w-full mt-3 px-3 py-2 bg-blue-600 text-semibold text-white rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
                     >
                       Get Directions
                     </button>
@@ -426,11 +566,11 @@ export default function StoreLocator() {
           </div>
 
           {/* Map */}
-          <div className="lg:col-span-2">
-            <div className="bg-transparent rounded-lg shadow-md overflow-hidden h-[700px]">
-              <div 
-                ref={mapContainerRef} 
-                className="w-full h-full rounded-3xl overflow-hidden shadow-2xl"
+          <div className="w-full lg:w-2/3">
+            <div className="bg-transparent rounded-2xl overflow-hidden h-[700px]">
+              <div
+                ref={mapContainerRef}
+                className="w-full h-full rounded-2xl overflow-hidden"
                 style={{ minHeight: '700px' }}
               />
             </div>
@@ -439,4 +579,4 @@ export default function StoreLocator() {
       </div>
     </div>
   );
-}
+};

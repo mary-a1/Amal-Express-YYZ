@@ -4,7 +4,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-[#0D0C1D] text-white">
+    <nav className="bg-transparent text-white ">
       <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center space-x-3">
           <img src="logo-amal-express.png" alt="Amal Express Logo" className="h-20 w-auto" />

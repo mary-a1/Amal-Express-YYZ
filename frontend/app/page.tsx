@@ -48,12 +48,12 @@ export default function Home() {
       <Navbar />
 
       {/* Hero + Calculator section */}
-      <div className="flex flex-col-reverse md:flex-row justify-center items-start gap-8 px-4 py-12 max-w-9xl mx-auto">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-start gap-8 px-4 py-12 max-w-7xl mx-auto">
         <HeroSection setFinalPayAmount={setFinalPayAmount}/>
       </div>
 
       {/* Transfer Steps */}
-      <div className="flex justify-center px-4 py-12 max-w-9xl mx-auto">
+      <div className="flex justify-center px-4 py-12 max-w-7xl mx-auto">
         <TransferSteps finalPayAmount={finalPayAmount} />
       </div>
       

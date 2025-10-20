@@ -9,17 +9,17 @@ interface HeroSectionProps {
 
 export default function HeroSection({ setFinalPayAmount }: HeroSectionProps) {
   return (
-    <section className=" text-white py-3 px-4 sm:py-3 lg:py-5  sm:px-6 lg:px-8">
+    <section id="hero" className="text-white py-3 px-4 sm:py-3 lg:py-5  sm:px-6 lg:px-8">
       <div className=" max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
         {/* Left Text Content */}
         <div className="space-y-6 order-2 lg:order-1">
-            <p className="font-bold text-2xl ">Welcome to Amal Express Canada  </p>
+            {/* <p className="font-semibold text-2xl ">Presented by Amal Express-Canada  </p> */}
           <div className="">
             <span className="bg-yellow-400 text-black font-bold text-lg px-3 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD 
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+          <h1 className="text-5xl sm:text-5xl lg:text-7xl font-extrabold leading-tight">
             Send Money Smarter, Faster,{" "}
             <span className="text-yellow-400">Everywhere.</span>
           </h1>

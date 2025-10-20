@@ -9,7 +9,7 @@ export default function TransferSteps({ finalPayAmount }: TransferStepsProps) {
   return (
     <>
       {/* 3 Easy Steps Section */}
-      <div className="bg-transparent text-white py-3 px-4 sm:py-3  sm:px-6 lg:px-8 lg:py-5">
+      <div id="steps" className="bg-transparent text-white py-3 px-4 sm:py-3  sm:px-6 lg:px-8 lg:py-5">
         <div className="max-w-7xl mx-auto text-2xl">
           <h2 className="text-4xl sm:text-4xl lg:text-5xl font-bold text-center mb-6">
             <span className="text-yellow-400">Send Money in 3 Easy Steps</span>
@@ -22,14 +22,14 @@ export default function TransferSteps({ finalPayAmount }: TransferStepsProps) {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <div className="border-2 border-orange-500 rounded-xl p-6 sm:p-8 bg-[#0D0C1D]">
+            <div className="border-2 border-yellow-400 rounded-xl p-6 sm:p-8 bg-[#0D0C1D]">
               <h3 className="text-xl sm:text-xxl font-bold mb-3">1. Enter your amount</h3>
               <p className="text-gray-300 text-lg leading-relaxed">
                 Type how much you want to send and we'll show your live exchange rate and commission instantly.
               </p>
             </div>
 
-            <div className="border-2 border-orange-500 rounded-xl p-6 sm:p-8 bg-[#0D0C1D]">
+            <div className="border-2 border-yellow-400 rounded-xl p-6 sm:p-8 bg-[#0D0C1D]">
               <h3 className="text-xl sm:text-xxl font-bold mb-3">2. E-transfer your total</h3>
               <p className="text-gray-300 text-lg leading-relaxed">
                 Send your Total Cost {finalPayAmount !== null && (
@@ -37,7 +37,7 @@ export default function TransferSteps({ finalPayAmount }: TransferStepsProps) {
               </p>
             </div>
 
-            <div className="border-2 border-orange-500 rounded-xl p-6 sm:p-8 bg-[#0D0C1D] md:col-span-2 lg:col-span-1">
+            <div className="border-2 border-yellow-400 rounded-xl p-6 sm:p-8 bg-[#0D0C1D] md:col-span-2 lg:col-span-1">
               <h3 className="text-xl sm:text-xl font-bold mb-3">3. We deliver your funds</h3>
               <p className="text-gray-300 text-lg leading-relaxed">
                 Once received, we process and confirm your transfer. ✨ For support, call <strong className="text-yellow-500">416-245-0805</strong>.

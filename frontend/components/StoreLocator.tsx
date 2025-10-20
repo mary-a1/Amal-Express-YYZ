@@ -304,163 +304,23 @@ export default function StoreLocator() {
     const address = encodeURIComponent(`${agent.address}, ${agent.city}, ${agent.province} ${agent.postalCode}`);
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
   };
-  // <div className="space-y-6 order-2 lg:order-1">
-  //   <p className="font-bold text-2xl ">Welcome to Amal Express Canada  </p>
-  //   <div className="">
-  //     <span className="bg-yellow-400 text-black font-bold text-lg px-1 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD
-  //     </span>
-  //   </div>
 
-  // return (
-  //   <div className="min-h-screen bg-transparent">
-  //     {/* Header */}
-  //     <div className="bg-transparent">
-  //       <div className=" px-4 sm:px-6 lg:px-8 py-2">
-  //         <div className="flex items-center gap-3">
-  //           <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-6">Find a Location Near You</h1>
-  //         </div>
-  //         <div>
-  //            <span className="bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider"> In Canada 🇨🇦 
-  //           </span>
-  //         </div>
-  //         <div>
-  //             <p className="text-white mt-1">Search by city or postal code</p>
-  //           </div>
-  //       </div>
-  //     </div>
-
-  //     {/* Main Content */}
-  //     <div className="px-4 sm:px-6 lg:px-8 py-8">
-  //       <div className="flex lg:flex-row gap-6">
-  //         {/* Sidebar - Search & Results */}
-  //         <div className="w-full lg:w-1/3 space-y-4">
-  //           {/* Search Box */}
-  //           <div className="space-y-4">
-  //             <div className="relative">
-  //               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-  //               <input
-  //                 type="text"
-  //                 placeholder="Search by city or postal code"
-  //                 value={searchTerm}
-  //                 onChange={(e) => setSearchTerm(e.target.value)}
-  //                 className="w-full pl-14 pr-6 py-4 bg-transparent border-3 border-orange-300 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg"
-  //               />
-  //             </div>
-
-  //             {/* Province Filter */}
-  //             <div className="mt-4">
-  //               <label className="block text-sm font-medium text-white-700 mb-2">
-  //                 Filter by Province
-  //               </label>
-  //               <select
-  //                 value={selectedProvince}
-  //                 onChange={(e) => setSelectedProvince(e.target.value)}
-  //                 className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-  //               >
-  //                 <option value="all">All Provinces</option>
-  //                 <option value="ON">Ontario</option>
-  //                 <option value="AB">Alberta</option>
-  //               </select>
-  //             </div>
-
-  //             {/* Use My Location Button */}
-  //             <button
-  //               onClick={getUserLocation}
-  //               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-colors"
-  //             >
-  //               <Navigation className="h-5 w-5" />
-  //               Use My Location
-  //             </button>
-
-  //             <p className="text-lg text-gray-400 mt-2">
-  //               {sortedAgents.length} agent{sortedAgents.length !== 1 ? 's' : ''} found
-  //             </p>
-  //           </div>
-
-  //           {/* Agent List */}
-  //           <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-  //             {sortedAgents.map((agent) => {
-  //               const distance = userLocation
-  //                 ? calculateDistance(userLocation.lat, userLocation.lng, agent.lat, agent.lng)
-  //                 : null;
-
-  //               return (
-  //                 <div
-  //                   key={agent.agentId}
-  //                   onClick={() => setSelectedAgent(agent)}
-  //                   className={` bg-[#0D0C1D] border-2 border-orange-300  rounded-lg shadow-md p-4 cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.agentId === agent.agentId ? 'ring-2 ring-blue-500' : ''
-  //                     }`}
-  //                 >
-  //                   <div className="flex items-start justify-between mb-3">
-  //                     <div className="flex-1 ">
-  //                       <h3 className="font-semibold text-white-900 text-xl">{agent.name}</h3>
-  //                       <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
-  //                       <p className="text-lg text-gray-400">
-  //                         {agent.city}, {agent.province} {agent.postalCode}
-  //                       </p>
-  //                       <div className="flex items-center gap-2 mt-2 ">
-  //                         <Phone className="h-4 w-4 text-yellow-400" />
-  //                         <a
-  //                           href={`tel:${agent.phone}`}
-  //                           className="text-sm text-yellow-400 hover:underline"
-  //                           onClick={(e) => e.stopPropagation()}
-  //                         >
-  //                           {agent.phone}
-  //                         </a>
-  //                       </div>
-  //                       {distance && (
-  //                         <p className="text-sm text-green-600 font-medium mt-2">
-  //                           {distance.toFixed(1)} km away
-  //                         </p>
-  //                       )}
-  //                     </div>
-  //                     <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0" />
-  //                   </div>
-  //                   <button
-  //                     onClick={(e) => {
-  //                       e.stopPropagation();
-  //                       getDirections(agent);
-  //                     }}
-  //                     className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
-  //                   >
-  //                     Get Directions
-  //                   </button>
-  //                 </div>
-  //               );
-  //             })}
-  //           </div>
-  //         </div>
-
-  //         {/* Map */}
-  //         <div className="w-full lg:w-2/3">
-  //           <div className="bg-transparent rounded-2xl overflow-hidden h-[700px]">
-  //             <div
-  //               ref={mapContainerRef}
-  //               className="w-full h-full rounded-2xl overflow-hidden"
-  //               style={{ minHeight: '700px' }}
-  //             />
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
   return (
-    <div className="w-full min-h-screen bg-transparent">
+    <div id="locations" className="w-full min-h-screen bg-transparent">
       {/* Header */}
       <div className="bg-transparent px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center">
-            Find a Location Near You <br/>
-          <span className=" w-fit text-center bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider">
+            Find a Location Near You <br />
+            <span className=" w-fit text-center bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider">
               In Canada 🇨🇦
             </span>
           </h1>
 
         </div>
-          <div>
-            
-          </div>
+        <div>
+
+        </div>
       </div>
 
       {/* Main Content */}
@@ -474,7 +334,7 @@ export default function StoreLocator() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search by city or postal code"
+                  placeholder="Search by City or Agent Name"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-14 pr-6 py-4 bg-transparent border-2 border-orange-300 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg"
@@ -567,7 +427,7 @@ export default function StoreLocator() {
 
           {/* Map */}
           <div className="w-full lg:w-2/3">
-            <div className="bg-transparent rounded-2xl overflow-hidden h-[700px]">
+            <div className="bg-transparent rounded-2xl overflow-hidden h-[500px] lg:h-[700px]">
               <div
                 ref={mapContainerRef}
                 className="w-full h-full rounded-2xl overflow-hidden"

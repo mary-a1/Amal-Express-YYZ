@@ -22,6 +22,7 @@ app.post('/api/quote', async (req, res) => {
   // Validate input
   if (
     typeof amount !== "number" ||
+    amount <= 0 ||
     currency !== "USD" || // Only support USD in this scope
     (mode !== "SEND" && mode !== "PAY")
   ) {
@@ -30,17 +31,20 @@ app.post('/api/quote', async (req, res) => {
   }
 
   try {
-    // Get live CAD -> USD rate
-    const rate = await getExchangeRate("USD");
+    // Get USD → CAD rate (rates.ts already inverts the API rate)
+    const usdToCadRate = await getExchangeRate("USD");
 
     // Compute quote based on mode
+    // SEND mode: user enters USD amount they want to send
+    // PAY mode: user enters CAD amount they want to pay
     const quote = mode === "SEND"
-      ? forwardQuote(amount, rate)
-      : reverseQuote(amount, rate);
+      ? forwardQuote(amount, usdToCadRate)
+      : reverseQuote(amount, usdToCadRate);
+
+    console.log("✅ Quote generated:", quote);
 
     res.json({
       ...quote,
-      rate,
       currency: "USD"
     });
 

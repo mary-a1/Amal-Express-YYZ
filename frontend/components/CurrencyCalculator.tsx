@@ -49,7 +49,7 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
 
       console.log("📤 Sending request:", { amount, currency: "USD", mode });
 
-      const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/quote", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/quote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

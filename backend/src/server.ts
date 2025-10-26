@@ -14,6 +14,10 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Amal Express backend is live 🚀");
+});
+
 app.post('/api/quote', async (req, res) => {
   const { mode, amount, currency } = req.body;
 

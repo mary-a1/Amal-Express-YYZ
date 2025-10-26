@@ -7,7 +7,8 @@ import { MapPin, Search, Phone, Navigation, X } from 'lucide-react';
 const agents = [
   {
     agentId: "CA106",
-    name: "Hussein Faadumo",
+    name: "Toronto Weston",
+    agent: "Faadumo Hussein",
     address: "2086 Lawrence Avenue West, Unit 05",
     city: "Toronto",
     province: "ON",
@@ -18,7 +19,8 @@ const agents = [
   },
   {
     agentId: "CA107",
-    name: "Jama Khalif Ahmed",
+    name: "Toronto Rexdale",
+    agent: "Jama Khalif Ahmed",
     address: "1987 Kipling Avenue",
     city: "Toronto",
     province: "ON",
@@ -29,7 +31,8 @@ const agents = [
   },
   {
     agentId: "CA108",
-    name: "Abokar Ibrahim",
+    name: "Toronto Scarborough",
+    agent: "Abokar Ibrahim",
     address: "6A-2387 Eglington Avenue East",
     city: "Scarborough",
     province: "ON",
@@ -40,7 +43,8 @@ const agents = [
   },
   {
     agentId: "CA110",
-    name: "Mohamed Omar",
+    name: "Calgary",
+    agent: "Mohamed Omar",
     address: "#101-4908, 17th St. SE",
     city: "Calgary",
     province: "AB",
@@ -51,7 +55,8 @@ const agents = [
   },
   {
     agentId: "CA111",
-    name: "Awale Adan",
+    name: "Toronto Downtown",
+    agent: "Awale Adan",
     address: "262 Parliament St",
     city: "Toronto",
     province: "ON",
@@ -62,7 +67,8 @@ const agents = [
   },
   {
     agentId: "CA113",
-    name: "Mohamoud Osman I.",
+    agent: "Mohamoud Osman I.",
+    name: "Brooks",
     address: "328 7 St E #103",
     city: "Brooks",
     province: "AB",
@@ -73,7 +79,8 @@ const agents = [
   },
   {
     agentId: "CA116",
-    name: "Jama Abdirizak",
+    agent: "Jama Abdirizak",
+    name: "Ottawa Bank St",
     address: "1644 Bank St, Unit 9",
     city: "Ottawa",
     province: "ON",
@@ -84,7 +91,8 @@ const agents = [
   },
   {
     agentId: "CA118",
-    name: "Osman Fadumo",
+    agent: "Osman Fadumo",
+    name: "Fort McMurray",
     address: "14-9914 Morrison Street",
     city: "Fort McMurray",
     province: "AB",
@@ -95,7 +103,8 @@ const agents = [
   },
   {
     agentId: "CA122",
-    name: "Abdulle Abdihakim Yusuf",
+    agent: "Abdulle Abdihakim Yusuf",
+    name: "Lethbridge",
     address: "736 13 St N",
     city: "Lethbridge",
     province: "AB",
@@ -106,7 +115,8 @@ const agents = [
   },
   {
     agentId: "CA123",
-    name: "God Liban Awaleh",
+    agent: "God Liban Awaleh",
+    name: "Ottawa St.Laurent Blvd",
     address: "5-967 St. Laurent Blvd",
     city: "Ottawa",
     province: "ON",
@@ -114,6 +124,78 @@ const agents = [
     phone: "613-462-1536",
     lat: 45.4215,
     lng: -75.6372
+  },
+  {
+    agentId: "CA124",
+    agent: "Aden Nimo",
+    name: "Saskatoon",
+    address: "5-702 22nd St West",
+    city: "Saskatoon",
+    province: "SK",
+    postalCode: "S7M 0R5",
+    phone: "306-321-4307",
+    lat: 52.1332,
+    lng: -106.6700
+  },
+  {
+    agentId: "CA127",
+    agent: "Mebrahtu Abraha Tekhlehaimanot",
+    name: "Burnaby",
+    address: "7335 Edmonds St",
+    city: "Burnaby",
+    province: "BC",
+    postalCode: "V3N 1H7",
+    phone: "604-600-3044",
+    lat: 49.2237,
+    lng: -122.9544
+  },
+  {
+    agentId: "CA131",
+    agent: "Aden Warsame",
+    name: "Winnipeg",
+    address: "67 The Promenade",
+    city: "Winnipeg",
+    province: "MB",
+    postalCode: "R3B 3J1",
+    phone: "204-430-0146",
+    lat: 49.8951,
+    lng: -97.1384
+  },
+  {
+    agentId: "CA139",
+    agent: "Abdiyare Abdull Sabriye",
+    name: "Kitchener",
+    address: "1-450 Belmont Ave W",
+    city: "Kitchener",
+    province: "ON",
+    postalCode: "N2M 1N3",
+    phone: "519-503-5817",
+    lat: 43.4516,
+    lng: -80.4925
+  },
+  {
+    agentId: "CA143",
+    agent: "Sabir Mohamud Ismail",
+    name: "Regina",
+    address: "1701 Park Street",
+    city: "Regina",
+    province: "SK",
+    postalCode: "S4N 2G3",
+    phone: "306-596-9631",
+    lat: 50.4452,
+    lng: -104.6189
+  },
+  {
+    agentId: "CA144",
+    agent: "Ahmed Iman Hussein",
+    name: "Surrey",
+    address: "101B-7750 128 St",
+    city: "Surrey",
+    province: "BC",
+    postalCode: "V3W 0R6",
+    phone: "604-679-8074",
+    lat: 49.1913,
+    lng: -122.8490
   }
 ];
 
@@ -198,6 +280,7 @@ export default function StoreLocator() {
       const popupContent = `
         <div style="min-width: 200px;">
           <h3 style="font-weight: bold; margin-bottom: 8px; color: #1f2937;">${agent.name}</h3>
+          <p style="font-size: 14px; color: #2563eb; margin-bottom: 8px;">📞 ${agent.agent}</p>
           <p style="font-size: 14px; color: #4b5563; margin-bottom: 4px;">${agent.address}</p>
           <p style="font-size: 14px; color: #4b5563; margin-bottom: 8px;">${agent.city}, ${agent.province} ${agent.postalCode}</p>
           <p style="font-size: 14px; color: #2563eb; margin-bottom: 8px;">📞 ${agent.phone}</p>
@@ -388,7 +471,8 @@ export default function StoreLocator() {
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-white text-xl">{agent.name}</h3>
+                        <h3 className="font-semibold text-white text-xl">{agent.name}</h3> 
+                        <p className="text-lg text-gray-300 mt-1">{agent.agent}</p>
                         <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
                         <p className="text-lg text-gray-400">
                           {agent.city}, {agent.province} {agent.postalCode}

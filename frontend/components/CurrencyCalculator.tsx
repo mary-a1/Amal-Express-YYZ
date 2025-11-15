@@ -25,10 +25,10 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
   // State for input values
   const [usdAmount, setUsdAmount] = useState<string>("100.00");
   const [cadAmount, setCadAmount] = useState<string>("");
-  
+
   // Track which field was last edited
   const [lastEdited, setLastEdited] = useState<"USD" | "CAD">("USD");
-  
+
   const [quote, setQuote] = useState<QuoteResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,11 +36,11 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
   const handleQuote = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const mode = lastEdited === "USD" ? "SEND" : "PAY";
       const amount = Number(lastEdited === "USD" ? usdAmount : cadAmount);
-      
+
       if (isNaN(amount) || amount <= 0) {
         setError("Please enter a valid amount");
         setLoading(false);
@@ -58,18 +58,18 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
           mode,
         }),
       });
-      
+
       if (!res.ok) {
         const errorText = await res.text();
         console.error("❌ API Error:", errorText);
         throw new Error(`Failed to fetch quote: ${res.status}`);
       }
-      
+
       const data: QuoteResponse = await res.json();
       console.log("📥 Received response:", data);
-      
+
       setQuote(data);
-      
+
       // Update the opposite field based on which mode we're in
       if (lastEdited === "USD") {
         // User entered USD, update CAD
@@ -145,11 +145,11 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
           <div>
             <p className="text-orange-500 font-semibold text-sm mb-1">Exchange Rate</p>
             <p className="text-base sm:text-lg font-bold text-black mb-1">
-              1 CAD = {quote.adjustedRate?.toFixed(4) || 'N/A'} USD
+              1 CAD = {quote.adjustedRate ? (1 / quote.adjustedRate).toFixed(4) : 'N/A'} USD
             </p>
-            <p className="text-xs text-gray-400 italic mt-1">
+            {/* <p className="text-xs text-gray-400 italic mt-1">
               *Adjusted to match BMO selling rate 😊
-            </p>
+            </p> */}
           </div>
 
           <div className="border-l-4 border-black pl-4 py-3 space-y-2.5 text-black">

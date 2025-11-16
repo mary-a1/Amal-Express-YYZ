@@ -2,6 +2,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { MapPin, Search, Phone, Navigation, X } from 'lucide-react';
+import Select from "react-select";
 
 // Your agents data with coordinates
 const agents = [
@@ -316,6 +317,14 @@ export default function StoreLocator() {
     }
   }, [selectedAgent, map]);
 
+  // Reset to first card when filters change
+  useEffect(() => {
+    setCurrentMobileCardIndex(0);
+    if (sortedAgents.length > 0) {
+      setSelectedAgent(sortedAgents[0]);
+    }
+  }, [selectedProvince]);
+
   // Filter agents based on search and province
   const filteredAgents = agents.filter(agent => {
     const matchesSearch =
@@ -390,35 +399,38 @@ export default function StoreLocator() {
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
   };
 
+  // Get mobile-carousel prev-next locations 
   const nextMobileCard = () => {
-    if (currentMobileCardIndex < sortedAgents.length - 1) {
-      setCurrentMobileCardIndex(currentMobileCardIndex + 1);
-      setSelectedAgent(sortedAgents[currentMobileCardIndex + 1]);
+    const nextIndex = currentMobileCardIndex + 1;
+    if (nextIndex < sortedAgents.length) {
+      setCurrentMobileCardIndex(nextIndex);
+      setSelectedAgent(sortedAgents[nextIndex]);
     }
   };
 
   const prevMobileCard = () => {
-    if (currentMobileCardIndex > 0) {
-      setCurrentMobileCardIndex(currentMobileCardIndex - 1);
-      setSelectedAgent(sortedAgents[currentMobileCardIndex - 1]);
+    const prevIndex = currentMobileCardIndex - 1;
+    if (prevIndex >= 0) {
+      setCurrentMobileCardIndex(prevIndex);
+      setSelectedAgent(sortedAgents[prevIndex]);
     }
   };
 
-  // Maps Carousel- Reset to first card when filters change
-  useEffect(() => {
-    setCurrentMobileCardIndex(0);
-    if (sortedAgents.length > 0) {
-      setSelectedAgent(sortedAgents[0]);
-    }
-  }, [selectedProvince, userLocation]);
-
+  const provinceOptions = [
+    { value: "all", label: "All Provinces" },
+    { value: "ON", label: "Ontario" },
+    { value: "AB", label: "Alberta" },
+    { value: "BC", label: "British Columbia" },
+    { value: "SK", label: "Saskatchewan" },
+    { value: "MB", label: "Manitoba" },
+  ];
 
   return (
-    <div id="locations" className="w-full min-h-screen bg-transparent">
-      {/* Header */}
+    <section id="locations" className="w-full min-h-screen bg-transparent py-3 px-4 sm:py-3 lg:py-5  sm:px-6 lg:px-8">
+      {/* Find Locations Header */}
       <div className="bg-transparent px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col gap-4">
-          <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-2">
+          <h1 className="text-white text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-2">
             Find a Location Near You <br />
             <span className="bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider">
               In Canada 🇨🇦
@@ -427,11 +439,11 @@ export default function StoreLocator() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-2">
-        <div className="flex flex-col lg:flex-row gap-6">
+      {/* Map Content */}
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row gap-6 lg:h-[750px]">
           {/* Sidebar - Search & Results */}
-          <div className="w-full lg:w-1/4 space-y-4">
+          <div className="w-full lg:w-1/4 space-y-4 lg:flex lg:flex-col lg:h-full">
             <div className="space-y-4">
 
               {/* Province Filter */}
@@ -439,18 +451,42 @@ export default function StoreLocator() {
                 <label className="block text-sm font-medium text-white mb-2">
                   Filter by Province
                 </label>
-                <select
-                  value={selectedProvince}
-                  onChange={(e) => setSelectedProvince(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0D0C1D] text-white border border-orange-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Provinces</option>
-                  <option value="ON">Ontario</option>
-                  <option value="AB">Alberta</option>
-                  <option value="BC">British Columbia</option>
-                  <option value="SK">Saskatchewan</option>
-                  <option value="MB">Manitoba</option>
-                </select>
+                <Select
+                  value={provinceOptions.find((opt) => opt.value === selectedProvince)}
+                  onChange={(selected) => setSelectedProvince(selected.value)}
+                  options={provinceOptions}
+                  className="text-black"
+                  classNamePrefix="province"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      background: "#1a1a3e",
+                      borderColor: "#f59e0b",
+                      borderWidth: "1px",
+                      borderRadius: "0.5rem",
+                      padding: "4px",
+                      boxShadow: "none",
+                      "&:hover": { borderColor: "#fbbf24" },
+                    }),
+                    singleValue: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      background: "#1a1a3e",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                      padding: "4px",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      background: state.isFocused ? "#2d2d5a" : "transparent",
+                      color: "white",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
               </div>
 
               {/* Use My Location Button */}
@@ -468,53 +504,10 @@ export default function StoreLocator() {
             </div>
 
             {/* Agent Card - Single Card on Mobile, Scrollable List on Desktop */}
-            <div className="lg:space-y-3 lg:max-h-[480px] lg:overflow-y-auto lg:pr-2">
-              {/* Mobile View - Single Card
-              {sortedAgents.slice(0, 1).map((agent) => {
-                const distance = userLocation
-                  ? calculateDistance(userLocation.lat, userLocation.lng, agent.lat, agent.lng)
-                  : null;
+            <div className="lg:space-y-3 lg:flex-1 lg:overflow-y-auto lg:pr-2">
 
-                return (
-                  <div key={agent.agentId} className="lg:hidden">
-                    <div className="bg-[#0D0C1D] border-2 border-orange-300 rounded-lg shadow-md p-4"
-                      onClick={() => setSelectedAgent(agent)}>
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-white text-xl">{agent.name}</h3>
-                          <p className="text-lg text-gray-300 mt-1">{agent.agent}</p>
-                          <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
-                          <p className="text-lg text-gray-400">
-                            {agent.city}, {agent.province} {agent.postalCode}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Phone className="h-4 w-4 text-yellow-400" />
-                            <a
-                              href={`tel:${agent.phone}`}
-                              className="text-sm text-yellow-400 hover:underline"
-                            >
-                              {agent.phone}
-                            </a>
-                          </div>
-                          {distance && (
-                            <p className="text-sm text-green-400 font-medium mt-2">
-                              {distance.toFixed(1)} km away
-                            </p>
-                          )}
-                        </div>
-                        <MapPin className="h-5 w-5 text-blue-500 flex-shrink-0" />
-                      </div>
-                      <button
-                        onClick={() => getDirections(agent)}
-                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
-                      >
-                        Get Directions
-                      </button>
-                    </div>
-                  </div>
-                );
-              })} */}
-              {/* Mobile View - Single Card with Navigation */}
+              {/* Mobile View - Single Card */}
+
               <div className="lg:hidden">
                 {sortedAgents.length > 0 && (
                   <>
@@ -529,8 +522,8 @@ export default function StoreLocator() {
                             onClick={prevMobileCard}
                             disabled={currentMobileCardIndex === 0}
                             className={`p-2 rounded-lg transition-all ${currentMobileCardIndex === 0
-                                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                                : 'bg-yellow-400 text-black hover:bg-yellow-500'
+                              ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                              : 'bg-yellow-400 text-black hover:bg-yellow-500'
                               }`}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -541,8 +534,8 @@ export default function StoreLocator() {
                             onClick={nextMobileCard}
                             disabled={currentMobileCardIndex === sortedAgents.length - 1}
                             className={`p-2 rounded-lg transition-all ${currentMobileCardIndex === sortedAgents.length - 1
-                                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                                : 'bg-yellow-400 text-black hover:bg-yellow-500'
+                              ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                              : 'bg-yellow-400 text-black hover:bg-yellow-500'
                               }`}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -554,28 +547,28 @@ export default function StoreLocator() {
                     </div>
 
                     {/* Current Card */}
-                    <div className="bg-[#0D0C1D] border-2 border-orange-300 rounded-lg shadow-md p-4">
+                    <div className="bg-[#1a1a3e] border-2 border-orange-300 rounded-lg shadow-md p-4 hover:bg-[#232350] transition-all duration-200">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <h3 className="font-semibold text-white text-xl">
-                            {sortedAgents[currentMobileCardIndex].name}
+                            {sortedAgents[currentMobileCardIndex]?.name}
                           </h3>
-                          <p className="text-lg text-gray-300 mt-1">
-                            {sortedAgents[currentMobileCardIndex].agent}
-                          </p>
+                          {/* <p className="text-lg text-gray-300 mt-1">
+                            {sortedAgents[currentMobileCardIndex]?.agent}
+                          </p> */}
                           <p className="text-lg text-gray-400 mt-1">
-                            {sortedAgents[currentMobileCardIndex].address}
+                            {sortedAgents[currentMobileCardIndex]?.address}
                           </p>
                           <p className="text-lg text-gray-400">
-                            {sortedAgents[currentMobileCardIndex].city}, {sortedAgents[currentMobileCardIndex].province} {sortedAgents[currentMobileCardIndex].postalCode}
+                            {sortedAgents[currentMobileCardIndex]?.city}, {sortedAgents[currentMobileCardIndex]?.province} {sortedAgents[currentMobileCardIndex]?.postalCode}
                           </p>
                           <div className="flex items-center gap-2 mt-2">
                             <Phone className="h-4 w-4 text-yellow-400" />
                             <a
-                              href={`tel:${sortedAgents[currentMobileCardIndex].phone}`}
+                              href={`tel:${sortedAgents[currentMobileCardIndex]?.phone}`}
                               className="text-sm text-yellow-400 hover:underline"
                             >
-                              {sortedAgents[currentMobileCardIndex].phone}
+                              {sortedAgents[currentMobileCardIndex]?.phone}
                             </a>
                           </div>
                           {userLocation && (
@@ -610,8 +603,8 @@ export default function StoreLocator() {
                               setSelectedAgent(sortedAgents[index]);
                             }}
                             className={`h-2 rounded-full transition-all ${index === currentMobileCardIndex
-                                ? 'w-8 bg-yellow-400'
-                                : 'w-2 bg-gray-600 hover:bg-gray-500'
+                              ? 'w-8 bg-yellow-400'
+                              : 'w-2 bg-gray-600 hover:bg-gray-500'
                               }`}
                           />
                         ))}
@@ -620,7 +613,7 @@ export default function StoreLocator() {
                   </>
                 )}
               </div>
-              
+
               {/* Desktop View - All Cards */}
               <div className="hidden lg:block space-y-3">
                 {sortedAgents.map((agent) => {
@@ -632,13 +625,16 @@ export default function StoreLocator() {
                     <div
                       key={agent.agentId}
                       onClick={() => setSelectedAgent(agent)}
-                      className={`bg-[#0D0C1D] border-2 border-orange-300 rounded-lg shadow-md p-4 cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.agentId === agent.agentId ? 'ring-2 ring-blue-500' : ''
+                      className={`bg-[#1a1a3e] border-2 rounded-lg shadow-md p-3 cursor-pointer transition-all duration-200 hover:shadow-xl hover:scale-[1.01] hover:bg-[#232350] 
+                        ${selectedAgent?.agentId === agent.agentId
+                          ? 'ring-2 ring-yellow-400 border-yellow-400 shadow-lg shadow-yellow-400/20'
+                          : 'border-orange-300 hover:border-yellow-400'
                         }`}
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <h3 className="font-semibold text-white text-xl">{agent.name}</h3>
-                          <p className="text-lg text-gray-300 mt-1">{agent.agent}</p>
+                          {/* <p className="text-lg text-gray-300 mt-1">{agent.agent}</p> */}
                           <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
                           <p className="text-lg text-gray-400">
                             {agent.city}, {agent.province} {agent.postalCode}
@@ -677,7 +673,7 @@ export default function StoreLocator() {
             </div>
           </div>
 
-          {/* Map */}
+          {/* Leaflet Map */}
           <div className="w-full lg:w-3/4">
             <div className="bg-transparent rounded-2xl overflow-hidden h-[400px] lg:h-[750px]">
               <div
@@ -689,6 +685,6 @@ export default function StoreLocator() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };

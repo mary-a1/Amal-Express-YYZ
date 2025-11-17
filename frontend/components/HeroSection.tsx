@@ -15,7 +15,7 @@ export default function HeroSection({ setFinalPayAmount }: HeroSectionProps) {
         {/* Left Text Content - Contains CAD badge and all text */}
         <div className="space-y-6 order-1 lg:order-1">
           {/* CAD Badge - Hidden on mobile, shown on desktop */}
-          <div className="">
+          <div className="pt-4">
             <span className="bg-yellow-400 text-black font-bold text-lg px-3 py-1.5 rounded-full tracking-wider">🇨🇦 $ CAD
             </span>
           </div>

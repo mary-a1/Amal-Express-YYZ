@@ -8,13 +8,13 @@ import Select from "react-select";
 const agents = [
   {
     agentId: "CA106",
-    name: "Toronto Weston",
+    name: "Toronto Weston/Lawerence HQ",
     agent: "Faadumo Hussein",
-    address: "2086 Lawrence Avenue West, Unit 05",
+    address: "2086 Lawrence Avenue West, Unit 04",
     city: "Toronto",
     province: "ON",
-    postalCode: "M9N 3Z9",
-    phone: "647-219-8381",
+    postalCode: "M9N 1H7",
+    phone: "416-245-0805",
     lat: 43.7184,
     lng: -79.5176
   },
@@ -416,6 +416,7 @@ export default function StoreLocator() {
     }
   };
 
+  // list of provinces in the filter
   const provinceOptions = [
     { value: "all", label: "All Provinces" },
     { value: "ON", label: "Ontario" },

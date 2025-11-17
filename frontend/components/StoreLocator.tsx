@@ -2,18 +2,19 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { MapPin, Search, Phone, Navigation, X } from 'lucide-react';
+import Select from "react-select";
 
 // Your agents data with coordinates
 const agents = [
   {
     agentId: "CA106",
-    name: "Toronto Weston",
+    name: "Toronto Weston/Lawerence HQ",
     agent: "Faadumo Hussein",
-    address: "2086 Lawrence Avenue West, Unit 05",
+    address: "2086 Lawrence Avenue West, Unit 04",
     city: "Toronto",
     province: "ON",
-    postalCode: "M9N 3Z9",
-    phone: "647-219-8381",
+    postalCode: "M9N 1H7",
+    phone: "416-245-0805",
     lat: 43.7184,
     lng: -79.5176
   },
@@ -208,6 +209,7 @@ export default function StoreLocator() {
   const [leaflet, setLeaflet] = useState(null);
   const mapContainerRef = useRef(null);
   const markersRef = useRef([]);
+  const [currentMobileCardIndex, setCurrentMobileCardIndex] = useState(0);
 
   // Load Leaflet dynamically
   useEffect(() => {
@@ -315,6 +317,14 @@ export default function StoreLocator() {
     }
   }, [selectedAgent, map]);
 
+  // Reset to first card when filters change
+  useEffect(() => {
+    setCurrentMobileCardIndex(0);
+    if (sortedAgents.length > 0) {
+      setSelectedAgent(sortedAgents[0]);
+    }
+  }, [selectedProvince]);
+
   // Filter agents based on search and province
   const filteredAgents = agents.filter(agent => {
     const matchesSearch =
@@ -389,56 +399,95 @@ export default function StoreLocator() {
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
   };
 
+  // Get mobile-carousel prev-next locations 
+  const nextMobileCard = () => {
+    const nextIndex = currentMobileCardIndex + 1;
+    if (nextIndex < sortedAgents.length) {
+      setCurrentMobileCardIndex(nextIndex);
+      setSelectedAgent(sortedAgents[nextIndex]);
+    }
+  };
+
+  const prevMobileCard = () => {
+    const prevIndex = currentMobileCardIndex - 1;
+    if (prevIndex >= 0) {
+      setCurrentMobileCardIndex(prevIndex);
+      setSelectedAgent(sortedAgents[prevIndex]);
+    }
+  };
+
+  // list of provinces in the filter
+  const provinceOptions = [
+    { value: "all", label: "All Provinces" },
+    { value: "ON", label: "Ontario" },
+    { value: "AB", label: "Alberta" },
+    { value: "BC", label: "British Columbia" },
+    { value: "SK", label: "Saskatchewan" },
+    { value: "MB", label: "Manitoba" },
+  ];
+
   return (
-    <div id="locations" className="w-full min-h-screen bg-transparent">
-      {/* Header */}
-      <div className="bg-transparent px-4 sm:px-6 lg:px-8 py-8">
+    <section id="locations" className="w-full min-h-screen bg-transparent py-3 px-4 sm:py-3 lg:py-5  sm:px-6 lg:px-8">
+      {/* Find Locations Header */}
+      <div className="bg-transparent px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col gap-4">
-          <h1 className="text-yellow-400 text-3xl sm:text-4xl lg:text-5xl font-bold text-center">
+          <h1 className="text-white text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-2">
             Find a Location Near You <br />
-            <span className=" w-fit text-center bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider">
+            <span className="bg-yellow-400 text-black font-bold text-lg px-4 py-1.5 rounded-full tracking-wider">
               In Canada 🇨🇦
             </span>
           </h1>
-
-        </div>
-        <div>
-
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
+      {/* Map Content */}
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row gap-6 lg:h-[750px]">
           {/* Sidebar - Search & Results */}
-          <div className="w-full lg:w-1/3 space-y-4">
-            {/* Search Box */}
+          <div className="w-full lg:w-1/4 space-y-4 lg:flex lg:flex-col lg:h-full">
             <div className="space-y-4">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search by City or Agent Name"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-transparent border-2 border-orange-300 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg"
-                />
-              </div>
 
               {/* Province Filter */}
               <div>
                 <label className="block text-sm font-medium text-white mb-2">
                   Filter by Province
                 </label>
-                <select
-                  value={selectedProvince}
-                  onChange={(e) => setSelectedProvince(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0D0C1D] text-white border border-orange-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Provinces</option>
-                  <option value="ON">Ontario</option>
-                  <option value="AB">Alberta</option>
-                </select>
+                <Select
+                  value={provinceOptions.find((opt) => opt.value === selectedProvince)}
+                  onChange={(selected) => setSelectedProvince(selected.value)}
+                  options={provinceOptions}
+                  className="text-black"
+                  classNamePrefix="province"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      background: "#1a1a3e",
+                      borderColor: "#f59e0b",
+                      borderWidth: "1px",
+                      borderRadius: "0.5rem",
+                      padding: "4px",
+                      boxShadow: "none",
+                      "&:hover": { borderColor: "#fbbf24" },
+                    }),
+                    singleValue: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      background: "#1a1a3e",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                      padding: "4px",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      background: state.isFocused ? "#2d2d5a" : "transparent",
+                      color: "white",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
               </div>
 
               {/* Use My Location Button */}
@@ -455,73 +504,188 @@ export default function StoreLocator() {
               </p>
             </div>
 
-            {/* Agent List */}
-            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-              {sortedAgents.map((agent) => {
-                const distance = userLocation
-                  ? calculateDistance(userLocation.lat, userLocation.lng, agent.lat, agent.lng)
-                  : null;
+            {/* Agent Card - Single Card on Mobile, Scrollable List on Desktop */}
+            <div className="lg:space-y-3 lg:flex-1 lg:overflow-y-auto lg:pr-2">
 
-                return (
-                  <div
-                    key={agent.agentId}
-                    onClick={() => setSelectedAgent(agent)}
-                    className={`bg-[#0D0C1D] border-2 border-orange-300 rounded-lg shadow-md p-4 cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.agentId === agent.agentId ? 'ring-2 ring-blue-500' : ''
-                      }`}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-white text-xl">{agent.name}</h3> 
-                        <p className="text-lg text-gray-300 mt-1">{agent.agent}</p>
-                        <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
-                        <p className="text-lg text-gray-400">
-                          {agent.city}, {agent.province} {agent.postalCode}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Phone className="h-4 w-4 text-yellow-400" />
-                          <a
-                            href={`tel:${agent.phone}`}
-                            className="text-sm text-yellow-400 hover:underline"
-                            onClick={(e) => e.stopPropagation()}
+              {/* Mobile View - Single Card */}
+
+              <div className="lg:hidden">
+                {sortedAgents.length > 0 && (
+                  <>
+                    {/* Navigation Info */}
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-white text-sm">
+                        Showing {currentMobileCardIndex + 1} of {sortedAgents.length}
+                      </p>
+                      {sortedAgents.length > 1 && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={prevMobileCard}
+                            disabled={currentMobileCardIndex === 0}
+                            className={`p-2 rounded-lg transition-all ${currentMobileCardIndex === 0
+                              ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                              : 'bg-yellow-400 text-black hover:bg-yellow-500'
+                              }`}
                           >
-                            {agent.phone}
-                          </a>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                          </button>
+                          <button
+                            onClick={nextMobileCard}
+                            disabled={currentMobileCardIndex === sortedAgents.length - 1}
+                            className={`p-2 rounded-lg transition-all ${currentMobileCardIndex === sortedAgents.length - 1
+                              ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                              : 'bg-yellow-400 text-black hover:bg-yellow-500'
+                              }`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </button>
                         </div>
-                        {distance && (
-                          <p className="text-sm text-green-400 font-medium mt-2">
-                            {distance.toFixed(1)} km away
-                          </p>
-                        )}
-                      </div>
-                      <MapPin className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                      )}
                     </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        getDirections(agent);
-                      }}
-                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+
+                    {/* Current Card */}
+                    <div className="bg-[#1a1a3e] border-2 border-orange-300 rounded-lg shadow-md p-4 hover:bg-[#232350] transition-all duration-200">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-white text-xl">
+                            {sortedAgents[currentMobileCardIndex]?.name}
+                          </h3>
+                          {/* <p className="text-lg text-gray-300 mt-1">
+                            {sortedAgents[currentMobileCardIndex]?.agent}
+                          </p> */}
+                          <p className="text-lg text-gray-400 mt-1">
+                            {sortedAgents[currentMobileCardIndex]?.address}
+                          </p>
+                          <p className="text-lg text-gray-400">
+                            {sortedAgents[currentMobileCardIndex]?.city}, {sortedAgents[currentMobileCardIndex]?.province} {sortedAgents[currentMobileCardIndex]?.postalCode}
+                          </p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Phone className="h-4 w-4 text-yellow-400" />
+                            <a
+                              href={`tel:${sortedAgents[currentMobileCardIndex]?.phone}`}
+                              className="text-sm text-yellow-400 hover:underline"
+                            >
+                              {sortedAgents[currentMobileCardIndex]?.phone}
+                            </a>
+                          </div>
+                          {userLocation && (
+                            <p className="text-sm text-green-400 font-medium mt-2">
+                              {calculateDistance(
+                                userLocation.lat,
+                                userLocation.lng,
+                                sortedAgents[currentMobileCardIndex].lat,
+                                sortedAgents[currentMobileCardIndex].lng
+                              ).toFixed(1)} km away
+                            </p>
+                          )}
+                        </div>
+                        <MapPin className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                      </div>
+                      <button
+                        onClick={() => getDirections(sortedAgents[currentMobileCardIndex])}
+                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+                      >
+                        Get Directions
+                      </button>
+                    </div>
+
+                    {/* Pagination Dots */}
+                    {sortedAgents.length > 1 && (
+                      <div className="flex justify-center gap-2 mt-4">
+                        {sortedAgents.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setCurrentMobileCardIndex(index);
+                              setSelectedAgent(sortedAgents[index]);
+                            }}
+                            className={`h-2 rounded-full transition-all ${index === currentMobileCardIndex
+                              ? 'w-8 bg-yellow-400'
+                              : 'w-2 bg-gray-600 hover:bg-gray-500'
+                              }`}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Desktop View - All Cards */}
+              <div className="hidden lg:block space-y-3">
+                {sortedAgents.map((agent) => {
+                  const distance = userLocation
+                    ? calculateDistance(userLocation.lat, userLocation.lng, agent.lat, agent.lng)
+                    : null;
+
+                  return (
+                    <div
+                      key={agent.agentId}
+                      onClick={() => setSelectedAgent(agent)}
+                      className={`bg-[#1a1a3e] border-2 rounded-lg shadow-md p-3 cursor-pointer transition-all duration-200 hover:shadow-xl hover:scale-[1.01] hover:bg-[#232350] 
+                        ${selectedAgent?.agentId === agent.agentId
+                          ? 'ring-2 ring-yellow-400 border-yellow-400 shadow-lg shadow-yellow-400/20'
+                          : 'border-orange-300 hover:border-yellow-400'
+                        }`}
                     >
-                      Get Directions
-                    </button>
-                  </div>
-                );
-              })}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-white text-xl">{agent.name}</h3>
+                          {/* <p className="text-lg text-gray-300 mt-1">{agent.agent}</p> */}
+                          <p className="text-lg text-gray-400 mt-1">{agent.address}</p>
+                          <p className="text-lg text-gray-400">
+                            {agent.city}, {agent.province} {agent.postalCode}
+                          </p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Phone className="h-4 w-4 text-yellow-400" />
+                            <a
+                              href={`tel:${agent.phone}`}
+                              className="text-sm text-yellow-400 hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {agent.phone}
+                            </a>
+                          </div>
+                          {distance && (
+                            <p className="text-sm text-green-400 font-medium mt-2">
+                              {distance.toFixed(1)} km away
+                            </p>
+                          )}
+                        </div>
+                        <MapPin className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          getDirections(agent);
+                        }}
+                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+                      >
+                        Get Directions
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          {/* Map */}
-          <div className="w-full lg:w-2/3">
-            <div className="bg-transparent rounded-2xl overflow-hidden h-[500px] lg:h-[700px]">
+          {/* Leaflet Map */}
+          <div className="w-full lg:w-3/4">
+            <div className="bg-transparent rounded-2xl overflow-hidden h-[400px] lg:h-[750px]">
               <div
                 ref={mapContainerRef}
                 className="w-full h-full rounded-2xl overflow-hidden"
-                style={{ minHeight: '700px' }}
+                style={{ minHeight: '400px' }}
               />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };

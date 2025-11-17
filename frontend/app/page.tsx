@@ -5,6 +5,7 @@ import HeroSection from '@/components/HeroSection';
 import TransferSteps from '@/components/TransferSteps';
 import StoreLocator from '@/components/StoreLocator';
 import Footer from '@/components/Footer';
+import Contact from '@/components/Contact';
 
 export default function Home() {
   const [finalPayAmount, setFinalPayAmount] = useState<number | null>(null);
@@ -15,21 +16,25 @@ export default function Home() {
       <Navbar />
 
       {/* Hero + Calculator section */}
-      <div className="flex flex-col-reverse md:flex-row justify-center items-start gap-8 px-4 py-12 max-w-7xl mx-auto">
         <HeroSection setFinalPayAmount={setFinalPayAmount}/>
-      </div>
+      {/* <div className="flex flex-col-reverse md:flex-row justify-center items-start gap-8 px-4 py-12 max-w-7xl mx-auto">
+      </div> */}
 
       {/* Transfer Steps */}
-      <div className="flex justify-center px-4 py-12 max-w-7xl mx-auto">
         <TransferSteps finalPayAmount={finalPayAmount} />
-      </div>
+      {/* <div className="flex justify-center px-4 py-12 max-w-7xl mx-auto">
+      </div> */}
       
       {/* Leaflet Maps */}
-        <div className="w-full max-w-7xl mx-auto">
         < StoreLocator/>
-      </div>
+        {/* <div className="w-full max-w-7xl mx-auto">
+      </div> */}
+
+      {/* Contact Section */}
+      <Contact/>
+      
+      {/* Footer Section */}
       <Footer />
     </main>
   );
 }
-// 

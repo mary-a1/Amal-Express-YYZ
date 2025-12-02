@@ -3,6 +3,38 @@
 
 import React, { useState, useEffect } from "react";
 
+const formatMoney = (value: number | undefined) => {
+  if (value === undefined || value === null) return "$0.00";
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+};
+
+
+const formatWithCommas = (value: string) => {
+  if (!value) return "";
+  const parts = value.split(".");
+  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const decimalPart = parts[1] ? "." + parts[1] : "";
+  return integerPart + decimalPart;
+};
+
+// ---- Number Formatting Helpers ----
+const formatNumber = (value: string | number) => {
+  if (!value) return "";
+  const num = Number(String(value).replace(/,/g, ""));
+  if (isNaN(num)) return "";
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num);
+};
+
+const parseNumber = (value: string) => {
+  return value.replace(/,/g, "");
+};
+
 interface QuoteResponse {
   mode: "SEND" | "PAY";
   commissionPct: number;
@@ -121,15 +153,32 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
         </h3>
         <div className="flex items-center justify-between border-b-2 border-gray-200 pb-4">
           <input
-            type="number"
+            type="text"
             step="1"
             min="0"
             className="text-3xl sm:text-4xl font-semibold outline-none flex-1 bg-transparent min-w-0 text-black"
-            placeholder="100.00"
-            value={usdAmount}
+            placeholder="0.00"
+            value={formatWithCommas(usdAmount)}
             onChange={(e) => {
-              setUsdAmount(e.target.value);
+              const input = e.target;
+              const raw = input.value.replace(/,/g, "");
+
+              // Only allow digits + decimals
+              if (!/^\d*\.?\d*$/.test(raw)) return;
+
+              // Save cursor position
+              const cursorPos = input.selectionStart || 0;
+              const beforeLength = input.value.length;
+
+              setUsdAmount(raw);
               setLastEdited("USD");
+
+              // NEXT TICK: Restore cursor after formatting
+              setTimeout(() => {
+                const afterLength = formatWithCommas(raw).length;
+                const diff = afterLength - beforeLength;
+                input.setSelectionRange(cursorPos + diff, cursorPos + diff);
+              }, 0);
             }}
           />
           <div className="flex items-center gap-2 ml-4">
@@ -158,7 +207,7 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
                 Amount to Send (USD)
               </span>
               <span className="font-semibold text-base text-black">
-                ${quote.recipientAmountUSD?.toFixed(2) || '0.00'}
+                ${formatMoney(quote.recipientAmountUSD)} USD
               </span>
             </div>
             <div className="flex justify-between items-center text-sm sm:text-base">
@@ -166,7 +215,7 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
                 Commission ({((quote.commissionPct || 0) * 100).toFixed(0)}%)
               </span>
               <span className="font-semibold text-base text-black">
-                ${quote.commissionUSD?.toFixed(2) || '0.00'} USD
+                ${formatMoney(quote.commissionUSD)} USD
               </span>
             </div>
             <div className="flex justify-between items-center text-sm sm:text-base">
@@ -174,7 +223,7 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
                 Total (USD)
               </span>
               <span className="font-semibold text-base text-black">
-                ${quote.totalUSD?.toFixed(2) || '0.00'}
+                ${formatMoney(quote.totalUSD)} USD
               </span>
             </div>
             <div className="border-t-2 border-gray-200 pt-2 mt-2"></div>
@@ -183,7 +232,7 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
                 You Pay (CAD)
               </span>
               <span className="font-bold text-lg sm:text-xl text-green-600">
-                ${quote.totalCAD?.toFixed(2) || '0.00'}
+                ${formatMoney(quote.totalCAD)} CAD
               </span>
             </div>
           </div>
@@ -197,15 +246,29 @@ export default function CurrencyCalculator({ setFinalPayAmount }: CurrencyCalcul
         </h3>
         <div className="flex items-center justify-between border-b-2 border-gray-200 pb-3">
           <input
-            type="number"
+            type="text"
             step="1"
             min="0"
             className="text-3xl sm:text-4xl font-semibold outline-none flex-1 bg-transparent min-w-0 text-black"
-            placeholder="153.52"
-            value={cadAmount}
+            placeholder="0.00"
+            value={formatWithCommas(cadAmount)}
             onChange={(e) => {
-              setCadAmount(e.target.value);
+              const input = e.target;
+              const raw = input.value.replace(/,/g, "");
+
+              if (!/^\d*\.?\d*$/.test(raw)) return;
+
+              const cursorPos = input.selectionStart || 0;
+              const beforeLength = input.value.length;
+
+              setCadAmount(raw);
               setLastEdited("CAD");
+
+              setTimeout(() => {
+                const afterLength = formatWithCommas(raw).length;
+                const diff = afterLength - beforeLength;
+                input.setSelectionRange(cursorPos + diff, cursorPos + diff);
+              }, 0);
             }}
           />
           <div className="flex items-center gap-2 ml-4">
